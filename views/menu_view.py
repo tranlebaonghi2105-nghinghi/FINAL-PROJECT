@@ -14,6 +14,9 @@ class MenuView:
         print("5. Delete Menu Item")
         print("6. Sort Menu Ascending")
         print("7. Sort Menu Descending")
+        print("8. Add Table")
+        print("9. View Tables")
+        print("10. Update Table Status")
         print("0. Exit")
 
         print("=" * 50)
@@ -32,8 +35,10 @@ class MenuView:
     def display_items(items):
 
         if len(items) == 0:
+
             print("No data found.")
             return
 
         for item in items:
+
             print(item)
