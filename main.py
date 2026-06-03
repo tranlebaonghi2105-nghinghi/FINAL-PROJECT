@@ -1,10 +1,12 @@
 from services.menu_service import MenuService
+from services.table_service import TableService
 from views.menu_view import MenuView
 
 
 def main():
 
     menu_service = MenuService()
+    table_service = TableService()
 
     while True:
 
@@ -121,6 +123,65 @@ def main():
             MenuView.display_items(
                 menu_service.sort_by_price_descending()
             )
+
+        elif choice == "8":
+
+            table_id = input(
+                "Enter table ID: "
+            )
+
+            try:
+
+                table_service.add_table(
+                    table_id
+                )
+
+                print(
+                    "Table added successfully."
+                )
+
+            except Exception as error:
+
+                print(error)
+
+        elif choice == "9":
+
+            tables = table_service.get_all_tables()
+
+            if len(tables) == 0:
+
+                print("No tables found.")
+
+            else:
+
+                for table in tables:
+
+                    print(table)
+
+        elif choice == "10":
+
+            table_id = input(
+                "Enter table ID: "
+            )
+
+            status = input(
+                "Enter status (Available/Occupied): "
+            )
+
+            try:
+
+                table_service.update_status(
+                    table_id,
+                    status
+                )
+
+                print(
+                    "Status updated successfully."
+                )
+
+            except Exception as error:
+
+                print(error)
 
         elif choice == "0":
 
