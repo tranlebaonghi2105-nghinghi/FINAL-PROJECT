@@ -17,6 +17,9 @@ class MenuView:
         print("8. Add Table")
         print("9. View Tables")
         print("10. Update Table Status")
+        print("11. Add Promotion")
+        print("12. View Promotions")
+        print("13. Delete Promotion")
         print("0. Exit")
 
         print("=" * 50)

@@ -1,5 +1,6 @@
 from services.menu_service import MenuService
 from services.table_service import TableService
+from services.promotion_service import PromotionService
 from views.menu_view import MenuView
 
 
@@ -7,6 +8,7 @@ def main():
 
     menu_service = MenuService()
     table_service = TableService()
+    promotion_service = PromotionService()
 
     while True:
 
@@ -177,6 +179,70 @@ def main():
 
                 print(
                     "Status updated successfully."
+                )
+
+            except Exception as error:
+
+                print(error)
+
+        elif choice == "11":
+
+            promotion_id = input(
+                "Enter promotion ID: "
+            )
+
+            name = input(
+                "Enter promotion name: "
+            )
+
+            discount_percent = float(
+                input("Enter discount percent: ")
+            )
+
+            try:
+
+                promotion_service.add_promotion(
+                    promotion_id,
+                    name,
+                    discount_percent
+                )
+
+                print(
+                    "Promotion added successfully."
+                )
+
+            except Exception as error:
+
+                print(error)
+
+        elif choice == "12":
+
+            promotions = promotion_service.get_all_promotions()
+
+            if len(promotions) == 0:
+
+                print("No promotions found.")
+
+            else:
+
+                for promotion in promotions:
+
+                    print(promotion)
+
+        elif choice == "13":
+
+            promotion_id = input(
+                "Enter promotion ID: "
+            )
+
+            try:
+
+                promotion_service.delete_promotion(
+                    promotion_id
+                )
+
+                print(
+                    "Promotion deleted successfully."
                 )
 
             except Exception as error:
