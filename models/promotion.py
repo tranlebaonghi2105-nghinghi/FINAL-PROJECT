@@ -1,12 +1,17 @@
 class Promotion:
 
-    def __init__(self, promo_code, discount_percent):
-        self.__promo_code = promo_code
+    def __init__(self, promotion_id, name, discount_percent):
+        self.__promotion_id = promotion_id
+        self.__name = name
         self.discount_percent = discount_percent
 
     @property
-    def promo_code(self):
-        return self.__promo_code
+    def promotion_id(self):
+        return self.__promotion_id
+
+    @property
+    def name(self):
+        return self.__name
 
     @property
     def discount_percent(self):
@@ -18,6 +23,7 @@ class Promotion:
             raise ValueError(
                 "Discount must be between 0 and 100."
             )
+
         self.__discount_percent = value
 
     def apply_discount(self, amount):
@@ -25,12 +31,14 @@ class Promotion:
 
     def to_dict(self):
         return {
-            "promo_code": self.promo_code,
+            "promotion_id": self.promotion_id,
+            "name": self.name,
             "discount_percent": self.discount_percent
         }
 
     def __str__(self):
         return (
-            f"Code: {self.promo_code} | "
+            f"Promotion ID: {self.promotion_id} | "
+            f"Name: {self.name} | "
             f"Discount: {self.discount_percent}%"
         )
