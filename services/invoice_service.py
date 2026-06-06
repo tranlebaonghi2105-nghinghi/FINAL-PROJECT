@@ -1,4 +1,8 @@
 from models.invoice import Invoice
+from models.food import Food
+from models.drink import Drink
+from models.combo import Combo
+from models.promotion import Promotion
 
 
 class InvoiceService:
@@ -64,3 +68,95 @@ class InvoiceService:
             raise ValueError("Invoice not found.")
 
         self.invoices.remove(invoice)
+
+    def get_item_type(self, item):
+        if isinstance(item, Food):
+            return "Food"
+
+        if isinstance(item, Drink):
+            return "Drink"
+
+        if isinstance(item, Combo):
+            return "Combo"
+
+        return "Unknown"
+
+    def create_item_from_data(self, item_data):
+        item_type = item_data["item_type"]
+        item_id = item_data["item_id"]
+        name = item_data["name"]
+        price = item_data["price"]
+
+        if item_type == "Food":
+            return Food(item_id, name, price)
+
+        if item_type == "Drink":
+            return Drink(item_id, name, price)
+
+        if item_type == "Combo":
+            return Combo(item_id, name, price)
+
+        raise ValueError("Invalid item type.")
+
+    def create_promotion_from_data(self, promotion_data):
+        if promotion_data is None:
+            return None
+
+        return Promotion(
+            promotion_data["promotion_id"],
+            promotion_data["name"],
+            promotion_data["discount_percent"]
+        )
+
+    def to_list_dict(self):
+        data = []
+
+        for invoice in self.invoices:
+            invoice_data = {
+                "invoice_id": invoice.invoice_id,
+                "table_id": invoice.table_id,
+                "items": [],
+                "promotion": None
+            }
+
+            for item in invoice.items:
+                invoice_data["items"].append({
+                    "item_type": self.get_item_type(item),
+                    "item_id": item.item_id,
+                    "name": item.name,
+                    "price": item.price
+                })
+
+            if invoice.promotion is not None:
+                invoice_data["promotion"] = {
+                    "promotion_id": invoice.promotion.promotion_id,
+                    "name": invoice.promotion.name,
+                    "discount_percent": invoice.promotion.discount_percent
+                }
+
+            data.append(invoice_data)
+
+        return data
+
+    def load_from_list_dict(self, data):
+        self.invoices = []
+
+        for invoice_data in data:
+            items = []
+
+            for item_data in invoice_data["items"]:
+                item = self.create_item_from_data(item_data)
+                items.append(item)
+
+            promotion = self.create_promotion_from_data(
+                invoice_data["promotion"]
+            )
+
+            invoice = Invoice(
+                invoice_data["invoice_id"],
+                invoice_data["table_id"],
+                items,
+                promotion
+            )
+
+            self.invoices.append(invoice)

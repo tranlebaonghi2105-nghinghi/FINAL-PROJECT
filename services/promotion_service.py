@@ -67,3 +67,39 @@ class PromotionService:
         self.promotions.remove(
             promotion
         )
+
+    def to_list_dict(self):
+
+        data = []
+
+        for promotion in self.promotions:
+
+            data.append({
+                "promotion_id":
+                    promotion.promotion_id,
+                "name":
+                    promotion.name,
+                "discount_percent":
+                    promotion.discount_percent
+            })
+
+        return data
+
+    def load_from_list_dict(
+        self,
+        data
+    ):
+
+        self.promotions = []
+
+        for promotion_data in data:
+
+            promotion = Promotion(
+                promotion_data["promotion_id"],
+                promotion_data["name"],
+                promotion_data["discount_percent"]
+            )
+
+            self.promotions.append(
+                promotion
+            )

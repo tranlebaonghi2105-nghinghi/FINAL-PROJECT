@@ -19,6 +19,7 @@ class TableService:
         for table in self.tables:
             if table.table_id == table_id:
                 return table
+
         return None
 
     def update_status(self, table_id, status):
@@ -36,3 +37,25 @@ class TableService:
             raise ValueError("Table not found.")
 
         self.tables.remove(table)
+
+    def to_list_dict(self):
+        data = []
+
+        for table in self.tables:
+            data.append({
+                "table_id": table.table_id,
+                "status": table.status
+            })
+
+        return data
+
+    def load_from_list_dict(self, data):
+        self.tables = []
+
+        for table_data in data:
+            table = Table(
+                table_data["table_id"],
+                table_data["status"]
+            )
+
+            self.tables.append(table)
