@@ -1,6 +1,7 @@
 from services.menu_service import MenuService
 from services.table_service import TableService
 from services.promotion_service import PromotionService
+from services.invoice_service import InvoiceService
 from views.menu_view import MenuView
 
 
@@ -9,6 +10,7 @@ def main():
     menu_service = MenuService()
     table_service = TableService()
     promotion_service = PromotionService()
+    invoice_service = InvoiceService()
 
     while True:
 
@@ -248,6 +250,130 @@ def main():
             except Exception as error:
 
                 print(error)
+
+        elif choice == "14":
+
+            invoice_id = input(
+                "Enter invoice ID: "
+            )
+
+            table_id = input(
+                "Enter table ID: "
+            )
+
+            table = table_service.find_by_id(
+                table_id
+            )
+
+            if table is None:
+
+                print("Table not found.")
+
+            else:
+
+                try:
+
+                    invoice_service.create_invoice(
+                        invoice_id,
+                        table_id
+                    )
+
+                    table_service.update_status(
+                        table_id,
+                        "Occupied"
+                    )
+
+                    print(
+                        "Invoice created successfully."
+                    )
+
+                except Exception as error:
+
+                    print(error)
+
+        elif choice == "15":
+
+            invoice_id = input(
+                "Enter invoice ID: "
+            )
+
+            item_id = input(
+                "Enter item ID: "
+            )
+
+            item = menu_service.find_by_id(
+                item_id
+            )
+
+            if item is None:
+
+                print("Item not found.")
+
+            else:
+
+                try:
+
+                    invoice_service.add_item_to_invoice(
+                        invoice_id,
+                        item
+                    )
+
+                    print(
+                        "Item added to invoice successfully."
+                    )
+
+                except Exception as error:
+
+                    print(error)
+
+        elif choice == "16":
+
+            invoice_id = input(
+                "Enter invoice ID: "
+            )
+
+            promotion_id = input(
+                "Enter promotion ID: "
+            )
+
+            promotion = promotion_service.find_by_id(
+                promotion_id
+            )
+
+            if promotion is None:
+
+                print("Promotion not found.")
+
+            else:
+
+                try:
+
+                    invoice_service.apply_promotion_to_invoice(
+                        invoice_id,
+                        promotion
+                    )
+
+                    print(
+                        "Promotion applied successfully."
+                    )
+
+                except Exception as error:
+
+                    print(error)
+
+        elif choice == "17":
+
+            invoices = invoice_service.get_all_invoices()
+
+            if len(invoices) == 0:
+
+                print("No invoices found.")
+
+            else:
+
+                for invoice in invoices:
+
+                    print(invoice)
 
         elif choice == "0":
 
