@@ -69,3 +69,29 @@ class MenuView:
             ])
 
         print(table)
+
+    @staticmethod
+    def display_promotions(promotions):
+
+        if len(promotions) == 0:
+
+            print("No promotions found.")
+            return
+
+        table = PrettyTable()
+
+        table.field_names = [
+            "Promotion ID",
+            "Name",
+            "Discount (%)"
+        ]
+
+        for promotion in promotions:
+
+            table.add_row([
+                promotion.promotion_id,
+                promotion.name,
+                f"{promotion.discount_percent:.2f}"
+            ])
+
+        print(table)

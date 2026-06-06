@@ -4,5 +4,11 @@
         "item_id": "C01",
         "name": "Test Combo",
         "price": 30.0
+    },
+    {
+        "item_type": "Combo",
+        "item_id": "C03",
+        "name": "Orange juice + Ice cream",
+        "price": 39.0
     }
 ]
