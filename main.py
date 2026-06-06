@@ -439,6 +439,37 @@ def main():
 
                     print(invoice)
 
+        elif choice == "18":
+
+            total_revenue = invoice_service.get_total_revenue()
+
+            print(
+                f"Total Revenue: {total_revenue:.2f}"
+            )
+
+        elif choice == "19":
+
+            invoice_count = invoice_service.get_invoice_count()
+
+            print(
+                f"Number Of Invoices: {invoice_count}"
+            )
+
+        elif choice == "20":
+
+            item = invoice_service.get_most_expensive_item()
+
+            if item is None:
+
+                print("No item found in invoices.")
+
+            else:
+
+                print("Most Expensive Item:")
+                print(f"ID: {item.item_id}")
+                print(f"Name: {item.name}")
+                print(f"Price: {item.calculate_price():.2f}")
+
         elif choice == "0":
 
             save_all_data(
