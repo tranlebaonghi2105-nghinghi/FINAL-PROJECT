@@ -1,0 +1,19 @@
+[
+    {
+        "invoice_id": "I01",
+        "table_id": "T99",
+        "items": [
+            {
+                "item_type": "Combo",
+                "item_id": "C01",
+                "name": "Test Combo",
+                "price": 30.0
+            }
+        ],
+        "promotion": {
+            "promotion_id": "P01",
+            "name": "Summer sale",
+            "discount_percent": 10.0
+        }
+    }
+]

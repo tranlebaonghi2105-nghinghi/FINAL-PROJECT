@@ -2,7 +2,64 @@ from services.menu_service import MenuService
 from services.table_service import TableService
 from services.promotion_service import PromotionService
 from services.invoice_service import InvoiceService
+from services.file_service import FileService
 from views.menu_view import MenuView
+
+
+MENU_FILE = "data/menu.json"
+TABLE_FILE = "data/tables.json"
+PROMOTION_FILE = "data/promotions.json"
+INVOICE_FILE = "data/invoices.json"
+
+
+def load_all_data(
+    menu_service,
+    table_service,
+    promotion_service,
+    invoice_service
+):
+    menu_service.load_from_list_dict(
+        FileService.load_data(MENU_FILE)
+    )
+
+    table_service.load_from_list_dict(
+        FileService.load_data(TABLE_FILE)
+    )
+
+    promotion_service.load_from_list_dict(
+        FileService.load_data(PROMOTION_FILE)
+    )
+
+    invoice_service.load_from_list_dict(
+        FileService.load_data(INVOICE_FILE)
+    )
+
+
+def save_all_data(
+    menu_service,
+    table_service,
+    promotion_service,
+    invoice_service
+):
+    FileService.save_data(
+        MENU_FILE,
+        menu_service.to_list_dict()
+    )
+
+    FileService.save_data(
+        TABLE_FILE,
+        table_service.to_list_dict()
+    )
+
+    FileService.save_data(
+        PROMOTION_FILE,
+        promotion_service.to_list_dict()
+    )
+
+    FileService.save_data(
+        INVOICE_FILE,
+        invoice_service.to_list_dict()
+    )
 
 
 def main():
@@ -11,6 +68,13 @@ def main():
     table_service = TableService()
     promotion_service = PromotionService()
     invoice_service = InvoiceService()
+
+    load_all_data(
+        menu_service,
+        table_service,
+        promotion_service,
+        invoice_service
+    )
 
     while True:
 
@@ -377,6 +441,14 @@ def main():
 
         elif choice == "0":
 
+            save_all_data(
+                menu_service,
+                table_service,
+                promotion_service,
+                invoice_service
+            )
+
+            print("Data saved successfully.")
             print("Goodbye.")
             break
 

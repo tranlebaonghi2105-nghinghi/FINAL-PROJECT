@@ -7,4 +7,4 @@ class Combo(MenuItem):
         super().__init__(item_id, name, price)
 
     def calculate_price(self):
-        return self.price * 0.9
+        return self.price

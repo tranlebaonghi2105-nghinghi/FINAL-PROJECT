@@ -12,14 +12,12 @@ class MenuService:
         if self.find_by_id(item_id):
             raise ValueError("Item ID already exists.")
 
-        if item_type == "Food":
-            item = Food(item_id, name, price)
-        elif item_type == "Drink":
-            item = Drink(item_id, name, price)
-        elif item_type == "Combo":
-            item = Combo(item_id, name, price)
-        else:
-            raise ValueError("Invalid item type.")
+        item = self.create_item_from_data(
+            item_type,
+            item_id,
+            name,
+            price
+        )
 
         self.menu_items.append(item)
 
@@ -30,6 +28,7 @@ class MenuService:
         for item in self.menu_items:
             if item.item_id == item_id:
                 return item
+
         return None
 
     def search_by_name(self, name):
@@ -69,3 +68,59 @@ class MenuService:
             key=lambda item: item.price,
             reverse=True
         )
+
+    def create_item_from_data(
+        self,
+        item_type,
+        item_id,
+        name,
+        price
+    ):
+        if item_type == "Food":
+            return Food(item_id, name, price)
+
+        if item_type == "Drink":
+            return Drink(item_id, name, price)
+
+        if item_type == "Combo":
+            return Combo(item_id, name, price)
+
+        raise ValueError("Invalid item type.")
+
+    def get_item_type(self, item):
+        if isinstance(item, Food):
+            return "Food"
+
+        if isinstance(item, Drink):
+            return "Drink"
+
+        if isinstance(item, Combo):
+            return "Combo"
+
+        return "Unknown"
+
+    def to_list_dict(self):
+        data = []
+
+        for item in self.menu_items:
+            data.append({
+                "item_type": self.get_item_type(item),
+                "item_id": item.item_id,
+                "name": item.name,
+                "price": item.price
+            })
+
+        return data
+
+    def load_from_list_dict(self, data):
+        self.menu_items = []
+
+        for item_data in data:
+            item = self.create_item_from_data(
+                item_data["item_type"],
+                item_data["item_id"],
+                item_data["name"],
+                item_data["price"]
+            )
+
+            self.menu_items.append(item)
