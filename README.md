@@ -385,7 +385,7 @@ git pull origin main
 
 # 13. Student Information
 
-Student Name: Trầ Lê Bảo Nghi
+Student Name: Trần Lê Bảo Nghi
 
 Student ID: 24S7040007
 
