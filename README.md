@@ -385,11 +385,11 @@ git pull origin main
 
 # 13. Student Information
 
-Student Name: YOUR NAME
+Student Name: Trầ Lê Bảo Nghi
 
-Student ID: YOUR ID
+Student ID: 24S7040007
 
-Class: YOUR CLASS
+Class: Tin2E
 
 Course: Programming Methods
 
