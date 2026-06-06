@@ -10,21 +10,12 @@ class InvoiceService:
     def __init__(self):
         self.invoices = []
 
-    def create_invoice(
-        self,
-        invoice_id,
-        table_id
-    ):
+    def create_invoice(self, invoice_id, table_id):
         if self.find_by_id(invoice_id):
             raise ValueError("Invoice ID already exists.")
 
-        invoice = Invoice(
-            invoice_id,
-            table_id
-        )
-
+        invoice = Invoice(invoice_id, table_id)
         self.invoices.append(invoice)
-
         return invoice
 
     def get_all_invoices(self):
@@ -34,14 +25,9 @@ class InvoiceService:
         for invoice in self.invoices:
             if invoice.invoice_id == invoice_id:
                 return invoice
-
         return None
 
-    def add_item_to_invoice(
-        self,
-        invoice_id,
-        item
-    ):
+    def add_item_to_invoice(self, invoice_id, item):
         invoice = self.find_by_id(invoice_id)
 
         if invoice is None:
@@ -49,11 +35,7 @@ class InvoiceService:
 
         invoice.add_item(item)
 
-    def apply_promotion_to_invoice(
-        self,
-        invoice_id,
-        promotion
-    ):
+    def apply_promotion_to_invoice(self, invoice_id, promotion):
         invoice = self.find_by_id(invoice_id)
 
         if invoice is None:
@@ -68,6 +50,29 @@ class InvoiceService:
             raise ValueError("Invoice not found.")
 
         self.invoices.remove(invoice)
+
+    def get_total_revenue(self):
+        total = 0
+
+        for invoice in self.invoices:
+            total += invoice.calculate_total()
+
+        return total
+
+    def get_invoice_count(self):
+        return len(self.invoices)
+
+    def get_most_expensive_item(self):
+        most_expensive_item = None
+
+        for invoice in self.invoices:
+            for item in invoice.items:
+                if most_expensive_item is None:
+                    most_expensive_item = item
+                elif item.calculate_price() > most_expensive_item.calculate_price():
+                    most_expensive_item = item
+
+        return most_expensive_item
 
     def get_item_type(self, item):
         if isinstance(item, Food):

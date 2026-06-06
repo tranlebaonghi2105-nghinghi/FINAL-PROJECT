@@ -27,6 +27,9 @@ class MenuView:
         print("15. Add Item To Invoice")
         print("16. Apply Promotion To Invoice")
         print("17. View Invoices")
+        print("18. Total Revenue")
+        print("19. Number Of Invoices")
+        print("20. Most Expensive Item")
         print("0. Exit")
 
         print("=" * 50)
