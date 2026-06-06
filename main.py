@@ -84,24 +84,12 @@ def main():
 
         if choice == "1":
 
-            item_type = input(
-                "Enter item type (Food/Drink/Combo): "
-            )
-
-            item_id = input(
-                "Enter item ID: "
-            )
-
-            name = input(
-                "Enter item name: "
-            )
-
-            price = float(
-                input("Enter item price: ")
-            )
+            item_type = input("Enter item type (Food/Drink/Combo): ")
+            item_id = input("Enter item ID: ")
+            name = input("Enter item name: ")
+            price = float(input("Enter item price: "))
 
             try:
-
                 menu_service.add_item(
                     item_type,
                     item_id,
@@ -114,7 +102,6 @@ def main():
                 )
 
             except Exception as error:
-
                 MenuView.show_message(error)
 
         elif choice == "2":
@@ -125,9 +112,7 @@ def main():
 
         elif choice == "3":
 
-            keyword = input(
-                "Enter item name: "
-            )
+            keyword = input("Enter item name: ")
 
             result = menu_service.search_by_name(
                 keyword
@@ -137,16 +122,10 @@ def main():
 
         elif choice == "4":
 
-            item_id = input(
-                "Enter item ID: "
-            )
-
-            new_price = float(
-                input("Enter new price: ")
-            )
+            item_id = input("Enter item ID: ")
+            new_price = float(input("Enter new price: "))
 
             try:
-
                 menu_service.update_item(
                     item_id,
                     new_price
@@ -157,17 +136,13 @@ def main():
                 )
 
             except Exception as error:
-
                 MenuView.show_message(error)
 
         elif choice == "5":
 
-            item_id = input(
-                "Enter item ID: "
-            )
+            item_id = input("Enter item ID: ")
 
             try:
-
                 menu_service.delete_item(
                     item_id
                 )
@@ -177,7 +152,6 @@ def main():
                 )
 
             except Exception as error:
-
                 MenuView.show_message(error)
 
         elif choice == "6":
@@ -194,149 +168,105 @@ def main():
 
         elif choice == "8":
 
-            table_id = input(
-                "Enter table ID: "
-            )
+            table_id = input("Enter table ID: ")
 
             try:
-
                 table_service.add_table(
                     table_id
                 )
 
-                print(
+                MenuView.show_message(
                     "Table added successfully."
                 )
 
             except Exception as error:
-
-                print(error)
+                MenuView.show_message(error)
 
         elif choice == "9":
 
             tables = table_service.get_all_tables()
 
             if len(tables) == 0:
-
-                print("No tables found.")
+                MenuView.show_message("No tables found.")
 
             else:
-
                 for table in tables:
-
                     print(table)
 
         elif choice == "10":
 
-            table_id = input(
-                "Enter table ID: "
-            )
-
-            status = input(
-                "Enter status (Available/Occupied): "
-            )
+            table_id = input("Enter table ID: ")
+            status = input("Enter status (Available/Occupied): ")
 
             try:
-
                 table_service.update_status(
                     table_id,
                     status
                 )
 
-                print(
+                MenuView.show_message(
                     "Status updated successfully."
                 )
 
             except Exception as error:
-
-                print(error)
+                MenuView.show_message(error)
 
         elif choice == "11":
 
-            promotion_id = input(
-                "Enter promotion ID: "
-            )
-
-            name = input(
-                "Enter promotion name: "
-            )
-
-            discount_percent = float(
-                input("Enter discount percent: ")
-            )
+            promotion_id = input("Enter promotion ID: ")
+            name = input("Enter promotion name: ")
+            discount_percent = float(input("Enter discount percent: "))
 
             try:
-
                 promotion_service.add_promotion(
                     promotion_id,
                     name,
                     discount_percent
                 )
 
-                print(
+                MenuView.show_message(
                     "Promotion added successfully."
                 )
 
             except Exception as error:
-
-                print(error)
+                MenuView.show_message(error)
 
         elif choice == "12":
 
-            promotions = promotion_service.get_all_promotions()
-
-            if len(promotions) == 0:
-
-                print("No promotions found.")
-
-            else:
-
-                for promotion in promotions:
-
-                    print(promotion)
+            MenuView.display_promotions(
+                promotion_service.get_all_promotions()
+            )
 
         elif choice == "13":
 
-            promotion_id = input(
-                "Enter promotion ID: "
-            )
+            promotion_id = input("Enter promotion ID: ")
 
             try:
-
                 promotion_service.delete_promotion(
                     promotion_id
                 )
 
-                print(
+                MenuView.show_message(
                     "Promotion deleted successfully."
                 )
 
             except Exception as error:
-
-                print(error)
+                MenuView.show_message(error)
 
         elif choice == "14":
 
-            invoice_id = input(
-                "Enter invoice ID: "
-            )
-
-            table_id = input(
-                "Enter table ID: "
-            )
+            invoice_id = input("Enter invoice ID: ")
+            table_id = input("Enter table ID: ")
 
             table = table_service.find_by_id(
                 table_id
             )
 
             if table is None:
-
-                print("Table not found.")
+                MenuView.show_message("Table not found.")
 
             else:
-
                 try:
-
                     invoice_service.create_invoice(
                         invoice_id,
                         table_id
@@ -347,103 +277,81 @@ def main():
                         "Occupied"
                     )
 
-                    print(
+                    MenuView.show_message(
                         "Invoice created successfully."
                     )
 
                 except Exception as error:
-
-                    print(error)
+                    MenuView.show_message(error)
 
         elif choice == "15":
 
-            invoice_id = input(
-                "Enter invoice ID: "
-            )
-
-            item_id = input(
-                "Enter item ID: "
-            )
+            invoice_id = input("Enter invoice ID: ")
+            item_id = input("Enter item ID: ")
 
             item = menu_service.find_by_id(
                 item_id
             )
 
             if item is None:
-
-                print("Item not found.")
+                MenuView.show_message("Item not found.")
 
             else:
-
                 try:
-
                     invoice_service.add_item_to_invoice(
                         invoice_id,
                         item
                     )
 
-                    print(
+                    MenuView.show_message(
                         "Item added to invoice successfully."
                     )
 
                 except Exception as error:
-
-                    print(error)
+                    MenuView.show_message(error)
 
         elif choice == "16":
 
-            invoice_id = input(
-                "Enter invoice ID: "
-            )
-
-            promotion_id = input(
-                "Enter promotion ID: "
-            )
+            invoice_id = input("Enter invoice ID: ")
+            promotion_id = input("Enter promotion ID: ")
 
             promotion = promotion_service.find_by_id(
                 promotion_id
             )
 
             if promotion is None:
-
-                print("Promotion not found.")
+                MenuView.show_message("Promotion not found.")
 
             else:
-
                 try:
-
                     invoice_service.apply_promotion_to_invoice(
                         invoice_id,
                         promotion
                     )
 
-                    print(
+                    MenuView.show_message(
                         "Promotion applied successfully."
                     )
 
                 except Exception as error:
-
-                    print(error)
+                    MenuView.show_message(error)
 
         elif choice == "17":
 
             invoices = invoice_service.get_all_invoices()
 
             if len(invoices) == 0:
-
-                print("No invoices found.")
+                MenuView.show_message("No invoices found.")
 
             else:
-
                 for invoice in invoices:
-
                     print(invoice)
 
         elif choice == "18":
 
             total_revenue = invoice_service.get_total_revenue()
 
-            print(
+            MenuView.show_message(
                 f"Total Revenue: {total_revenue:.2f}"
             )
 
@@ -451,7 +359,7 @@ def main():
 
             invoice_count = invoice_service.get_invoice_count()
 
-            print(
+            MenuView.show_message(
                 f"Number Of Invoices: {invoice_count}"
             )
 
@@ -460,11 +368,9 @@ def main():
             item = invoice_service.get_most_expensive_item()
 
             if item is None:
-
-                print("No item found in invoices.")
+                MenuView.show_message("No item found in invoices.")
 
             else:
-
                 print("Most Expensive Item:")
                 print(f"ID: {item.item_id}")
                 print(f"Name: {item.name}")
@@ -479,13 +385,13 @@ def main():
                 invoice_service
             )
 
-            print("Data saved successfully.")
-            print("Goodbye.")
+            MenuView.show_message("Data saved successfully.")
+            MenuView.show_message("Goodbye.")
             break
 
         else:
 
-            print("Invalid choice.")
+            MenuView.show_message("Invalid choice.")
 
 
 if __name__ == "__main__":
