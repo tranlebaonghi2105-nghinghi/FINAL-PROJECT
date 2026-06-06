@@ -1,3 +1,6 @@
+from prettytable import PrettyTable
+
+
 class MenuView:
 
     @staticmethod
@@ -20,6 +23,10 @@ class MenuView:
         print("11. Add Promotion")
         print("12. View Promotions")
         print("13. Delete Promotion")
+        print("14. Create Invoice")
+        print("15. Add Item To Invoice")
+        print("16. Apply Promotion To Invoice")
+        print("17. View Invoices")
         print("0. Exit")
 
         print("=" * 50)
@@ -42,6 +49,20 @@ class MenuView:
             print("No data found.")
             return
 
+        table = PrettyTable()
+
+        table.field_names = [
+            "Item ID",
+            "Name",
+            "Price"
+        ]
+
         for item in items:
 
-            print(item)
+            table.add_row([
+                item.item_id,
+                item.name,
+                f"{item.calculate_price():.2f}"
+            ])
+
+        print(table)
