@@ -8,3 +8,10 @@ class Food(MenuItem):
 
     def calculate_price(self):
         return self.price
+
+    def __str__(self):
+        return (
+            f"[Food] ID: {self.item_id} | "
+            f"Name: {self.name} | "
+            f"Price: {self.calculate_price():.2f}"
+        )

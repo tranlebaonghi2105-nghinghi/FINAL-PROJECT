@@ -3,10 +3,5 @@
         "promotion_id": "P01",
         "name": "Summer sale",
         "discount_percent": 10.0
-    },
-    {
-        "promotion_id": "P02",
-        "name": "Students",
-        "discount_percent": 2.0
     }
 ]
