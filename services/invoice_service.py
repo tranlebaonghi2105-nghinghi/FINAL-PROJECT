@@ -1,3 +1,5 @@
+import csv
+import os
 from models.invoice import Invoice
 from models.food import Food
 from models.drink import Drink
@@ -73,6 +75,88 @@ class InvoiceService:
                     most_expensive_item = item
 
         return most_expensive_item
+
+    def get_statistics_by_type(self):
+        stats = {
+            "Food": {"count": 0, "revenue": 0.0},
+            "Drink": {"count": 0, "revenue": 0.0},
+            "Combo": {"count": 0, "revenue": 0.0}
+        }
+
+        for invoice in self.invoices:
+            for item in invoice.items:
+                item_type = self.get_item_type(item)
+
+                if item_type in stats:
+                    stats[item_type]["count"] += 1
+                    stats[item_type]["revenue"] += item.calculate_price()
+
+        return stats
+
+    def export_to_csv(self):
+        if not os.path.exists("data"):
+            os.makedirs("data")
+
+        filename = "data/invoices_export.csv"
+
+        with open(filename, "w", newline="", encoding="utf-8") as file:
+            writer = csv.writer(file)
+
+            writer.writerow([
+                "Invoice ID",
+                "Table ID",
+                "Item ID",
+                "Item Name",
+                "Item Type",
+                "Item Price",
+                "Promotion",
+                "Discount (%)",
+                "Subtotal",
+                "Total"
+            ])
+
+            for invoice in self.invoices:
+                promotion_name = (
+                    invoice.promotion.name
+                    if invoice.promotion
+                    else "None"
+                )
+
+                discount_percent = (
+                    invoice.promotion.discount_percent
+                    if invoice.promotion
+                    else 0
+                )
+
+                if len(invoice.items) == 0:
+                    writer.writerow([
+                        invoice.invoice_id,
+                        invoice.table_id,
+                        "-",
+                        "-",
+                        "-",
+                        "-",
+                        promotion_name,
+                        discount_percent,
+                        invoice.calculate_subtotal(),
+                        invoice.calculate_total()
+                    ])
+                else:
+                    for item in invoice.items:
+                        writer.writerow([
+                            invoice.invoice_id,
+                            invoice.table_id,
+                            item.item_id,
+                            item.name,
+                            self.get_item_type(item),
+                            f"{item.calculate_price():.2f}",
+                            promotion_name,
+                            discount_percent,
+                            f"{invoice.calculate_subtotal():.2f}",
+                            f"{invoice.calculate_total():.2f}"
+                        ])
+
+        return filename
 
     def get_item_type(self, item):
         if isinstance(item, Food):

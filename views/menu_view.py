@@ -30,6 +30,8 @@ class MenuView:
         print("18. Total Revenue")
         print("19. Number Of Invoices")
         print("20. Most Expensive Item")
+        print("21. Statistics By Type")
+        print("22. Export Invoices To CSV")
         print("0. Exit")
 
         print("=" * 50)
@@ -92,6 +94,31 @@ class MenuView:
                 promotion.promotion_id,
                 promotion.name,
                 f"{promotion.discount_percent:.2f}"
+            ])
+
+        print(table)
+
+    @staticmethod
+    def show_statistics(stats):
+
+        print("\n" + "=" * 50)
+        print("STATISTICS BY ITEM TYPE")
+        print("=" * 50)
+
+        table = PrettyTable()
+
+        table.field_names = [
+            "Item Type",
+            "Count",
+            "Total Revenue"
+        ]
+
+        for item_type, data in stats.items():
+
+            table.add_row([
+                item_type,
+                data["count"],
+                f"{data['revenue']:.2f}"
             ])
 
         print(table)
