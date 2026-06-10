@@ -84,12 +84,12 @@ def main():
 
         if choice == "1":
 
-            item_type = input("Enter item type (Food/Drink/Combo): ")
-            item_id = input("Enter item ID: ")
-            name = input("Enter item name: ")
-            price = float(input("Enter item price: "))
-
             try:
+                item_type = input("Enter item type (Food/Drink/Combo): ")
+                item_id = input("Enter item ID: ")
+                name = input("Enter item name: ")
+                price = float(input("Enter item price: "))
+
                 menu_service.add_item(
                     item_type,
                     item_id,
@@ -100,6 +100,9 @@ def main():
                 MenuView.show_message(
                     "Item added successfully."
                 )
+
+            except ValueError as error:
+                MenuView.show_message(f"Invalid input: {error}")
 
             except Exception as error:
                 MenuView.show_message(error)
@@ -122,10 +125,10 @@ def main():
 
         elif choice == "4":
 
-            item_id = input("Enter item ID: ")
-            new_price = float(input("Enter new price: "))
-
             try:
+                item_id = input("Enter item ID: ")
+                new_price = float(input("Enter new price: "))
+
                 menu_service.update_item(
                     item_id,
                     new_price
@@ -134,6 +137,9 @@ def main():
                 MenuView.show_message(
                     "Updated successfully."
                 )
+
+            except ValueError as error:
+                MenuView.show_message(f"Invalid input: {error}")
 
             except Exception as error:
                 MenuView.show_message(error)
@@ -213,11 +219,11 @@ def main():
 
         elif choice == "11":
 
-            promotion_id = input("Enter promotion ID: ")
-            name = input("Enter promotion name: ")
-            discount_percent = float(input("Enter discount percent: "))
-
             try:
+                promotion_id = input("Enter promotion ID: ")
+                name = input("Enter promotion name: ")
+                discount_percent = float(input("Enter discount percent: "))
+
                 promotion_service.add_promotion(
                     promotion_id,
                     name,
@@ -227,6 +233,9 @@ def main():
                 MenuView.show_message(
                     "Promotion added successfully."
                 )
+
+            except ValueError as error:
+                MenuView.show_message(f"Invalid input: {error}")
 
             except Exception as error:
                 MenuView.show_message(error)
@@ -375,6 +384,19 @@ def main():
                 print(f"ID: {item.item_id}")
                 print(f"Name: {item.name}")
                 print(f"Price: {item.calculate_price():.2f}")
+
+        elif choice == "21":
+
+            MenuView.show_statistics(
+                invoice_service.get_statistics_by_type()
+            )
+
+        elif choice == "22":
+
+            filename = invoice_service.export_to_csv()
+            MenuView.show_message(
+                f"Exported successfully to: {filename}"
+            )
 
         elif choice == "0":
 
