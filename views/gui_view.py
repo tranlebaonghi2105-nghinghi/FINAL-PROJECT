@@ -31,7 +31,6 @@ class GUIView:
     # ------------------------------------------------------------------ #
 
     def _build_ui(self):
-        # Title bar
         title = tk.Label(
             self.root,
             text="☕  CAFE MANAGEMENT SYSTEM",
@@ -42,7 +41,6 @@ class GUIView:
         )
         title.pack(fill=tk.X)
 
-        # Notebook (tabs)
         style = ttk.Style()
         style.theme_use("clam")
         style.configure(
@@ -54,17 +52,14 @@ class GUIView:
         self.notebook = ttk.Notebook(self.root)
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
-        # Build each tab
         self._build_menu_tab()
         self._build_table_tab()
         self._build_promotion_tab()
         self._build_invoice_tab()
         self._build_statistics_tab()
 
-        # Bind tab change để tự động load statistics
         self.notebook.bind("<<NotebookTabChanged>>", self._on_tab_changed)
 
-        # Exit button
         exit_btn = tk.Button(
             self.root,
             text="💾  Save & Exit",
@@ -79,7 +74,7 @@ class GUIView:
         exit_btn.pack(pady=(0, 10))
 
     # ------------------------------------------------------------------ #
-    #  HELPER: create a Treeview with scrollbar
+    #  HELPER
     # ------------------------------------------------------------------ #
 
     def _make_tree(self, parent, columns):
@@ -106,7 +101,6 @@ class GUIView:
         return tree
 
     def _make_button_row(self, parent, buttons):
-        """buttons = list of (label, bg, command)"""
         row = tk.Frame(parent, bg="#f5f5f5")
         row.pack(pady=6)
         for label, bg, cmd in buttons:
@@ -164,8 +158,7 @@ class GUIView:
 
     def _menu_add(self):
         item_type = simpledialog.askstring(
-            "Add Item",
-            "Item type (Food / Drink / Combo):"
+            "Add Item", "Item type (Food / Drink / Combo):"
         )
         if not item_type:
             return
@@ -267,8 +260,7 @@ class GUIView:
             return
         table_id = self.table_tree.item(selected[0])["values"][0]
         status = simpledialog.askstring(
-            "Update Status",
-            "New status (Available / Occupied):"
+            "Update Status", "New status (Available / Occupied):"
         )
         try:
             self.table_service.update_status(str(table_id), status)
@@ -290,9 +282,9 @@ class GUIView:
         )
 
         self._make_button_row(tab, [
-            ("➕ Add",    "#27ae60", self._promo_add),
-            ("🗑 Delete", "#e74c3c", self._promo_delete),
-            ("🔄 Refresh","#7f8c8d", self._promo_refresh),
+            ("➕ Add",     "#27ae60", self._promo_add),
+            ("🗑 Delete",  "#e74c3c", self._promo_delete),
+            ("🔄 Refresh", "#7f8c8d", self._promo_refresh),
         ])
 
         self._promo_refresh()
@@ -348,11 +340,11 @@ class GUIView:
         )
 
         self._make_button_row(tab, [
-            ("➕ New Invoice",      "#27ae60", self._invoice_create),
-            ("🍽 Add Item",         "#f39c12", self._invoice_add_item),
-            ("🎁 Apply Promotion",  "#8e44ad", self._invoice_apply_promo),
-            ("📤 Export CSV",       "#2980b9", self._invoice_export),
-            ("🔄 Refresh",          "#7f8c8d", self._invoice_refresh),
+            ("➕ New Invoice",     "#27ae60", self._invoice_create),
+            ("🍽 Add Item",        "#f39c12", self._invoice_add_item),
+            ("🎁 Apply Promotion", "#8e44ad", self._invoice_apply_promo),
+            ("📤 Export CSV",      "#2980b9", self._invoice_export),
+            ("🔄 Refresh",         "#7f8c8d", self._invoice_refresh),
         ])
 
         self._invoice_refresh()
@@ -455,7 +447,6 @@ class GUIView:
         ])
 
     def _on_tab_changed(self, event):
-        # Tab Statistics là tab thứ 5 (index 4)
         selected = self.notebook.index(self.notebook.select())
         if selected == 4:
             self._stats_load()
@@ -467,30 +458,72 @@ class GUIView:
         total_revenue = self.invoice_service.get_total_revenue()
         invoice_count = self.invoice_service.get_invoice_count()
         most_exp = self.invoice_service.get_most_expensive_item()
-        stats = self.invoice_service.get_statistics_by_type()
+        stats_by_type = self.invoice_service.get_statistics_by_type()
+        stats_by_month = self.invoice_service.get_statistics_by_month()
+        top3 = self.invoice_service.get_top3_best_selling()
 
         lines = [
-            "=" * 45,
+            "=" * 50,
             "  CAFE MANAGEMENT — STATISTICS",
-            "=" * 45,
+            "=" * 50,
             f"  Total Invoices   : {invoice_count}",
             f"  Total Revenue    : {total_revenue:.2f}",
-            "-" * 45,
+            "",
+            "-" * 50,
             "  REVENUE BY ITEM TYPE",
-            "-" * 45,
+            "-" * 50,
         ]
-        for item_type, data in stats.items():
+
+        for item_type, data in stats_by_type.items():
             lines.append(
                 f"  {item_type:<10} — Count: {data['count']:>4}  |  "
                 f"Revenue: {data['revenue']:>10.2f}"
             )
-        lines.append("-" * 45)
+
+        lines += [
+            "",
+            "-" * 50,
+            "  REVENUE BY MONTH",
+            "-" * 50,
+        ]
+
+        if stats_by_month:
+            for month, data in stats_by_month.items():
+                lines.append(
+                    f"  {month}   — Invoices: {data['invoice_count']:>3}  |  "
+                    f"Revenue: {data['revenue']:>10.2f}"
+                )
+        else:
+            lines.append("  No invoice data yet.")
+
+        lines += [
+            "",
+            "-" * 50,
+            "  TOP 3 BEST-SELLING ITEMS",
+            "-" * 50,
+        ]
+
+        if top3:
+            for i, entry in enumerate(top3, start=1):
+                item = entry["item"]
+                lines.append(
+                    f"  #{i}  {item.name:<20} — Sold: {entry['count']:>3} times"
+                )
+        else:
+            lines.append("  No items sold yet.")
+
+        lines += [
+            "",
+            "-" * 50,
+        ]
+
         if most_exp:
             lines.append(
                 f"  Most Expensive   : {most_exp.name} "
                 f"({most_exp.calculate_price():.2f})"
             )
-        lines.append("=" * 45)
+
+        lines.append("=" * 50)
 
         self.stats_text.insert(tk.END, "\n".join(lines))
         self.stats_text.config(state=tk.DISABLED)
