@@ -31,34 +31,26 @@ class InvoiceService:
 
     def add_item_to_invoice(self, invoice_id, item):
         invoice = self.find_by_id(invoice_id)
-
         if invoice is None:
             raise ValueError("Invoice not found.")
-
         invoice.add_item(item)
 
     def apply_promotion_to_invoice(self, invoice_id, promotion):
         invoice = self.find_by_id(invoice_id)
-
         if invoice is None:
             raise ValueError("Invoice not found.")
-
         invoice.apply_promotion(promotion)
 
     def delete_invoice(self, invoice_id):
         invoice = self.find_by_id(invoice_id)
-
         if invoice is None:
             raise ValueError("Invoice not found.")
-
         self.invoices.remove(invoice)
 
     def get_total_revenue(self):
         total = 0
-
         for invoice in self.invoices:
             total += invoice.calculate_total()
-
         return total
 
     def get_invoice_count(self):
@@ -66,14 +58,12 @@ class InvoiceService:
 
     def get_most_expensive_item(self):
         most_expensive_item = None
-
         for invoice in self.invoices:
             for item in invoice.items:
                 if most_expensive_item is None:
                     most_expensive_item = item
                 elif item.calculate_price() > most_expensive_item.calculate_price():
                     most_expensive_item = item
-
         return most_expensive_item
 
     def get_statistics_by_type(self):
@@ -86,12 +76,45 @@ class InvoiceService:
         for invoice in self.invoices:
             for item in invoice.items:
                 item_type = self.get_item_type(item)
-
                 if item_type in stats:
                     stats[item_type]["count"] += 1
                     stats[item_type]["revenue"] += item.calculate_price()
 
         return stats
+
+    def get_statistics_by_month(self):
+        """Thống kê doanh thu theo tháng (YYYY-MM)."""
+        stats = {}
+
+        for invoice in self.invoices:
+            month = invoice.created_at
+
+            if month not in stats:
+                stats[month] = {"invoice_count": 0, "revenue": 0.0}
+
+            stats[month]["invoice_count"] += 1
+            stats[month]["revenue"] += invoice.calculate_total()
+
+        return dict(sorted(stats.items()))
+
+    def get_top3_best_selling(self):
+        """Top 3 món bán chạy nhất theo số lượng."""
+        item_count = {}
+
+        for invoice in self.invoices:
+            for item in invoice.items:
+                key = item.item_id
+                if key not in item_count:
+                    item_count[key] = {"item": item, "count": 0}
+                item_count[key]["count"] += 1
+
+        sorted_items = sorted(
+            item_count.values(),
+            key=lambda x: x["count"],
+            reverse=True
+        )
+
+        return sorted_items[:3]
 
     def export_to_csv(self):
         if not os.path.exists("data"):
@@ -105,6 +128,7 @@ class InvoiceService:
             writer.writerow([
                 "Invoice ID",
                 "Table ID",
+                "Created At",
                 "Item ID",
                 "Item Name",
                 "Item Type",
@@ -132,10 +156,8 @@ class InvoiceService:
                     writer.writerow([
                         invoice.invoice_id,
                         invoice.table_id,
-                        "-",
-                        "-",
-                        "-",
-                        "-",
+                        invoice.created_at,
+                        "-", "-", "-", "-",
                         promotion_name,
                         discount_percent,
                         invoice.calculate_subtotal(),
@@ -146,6 +168,7 @@ class InvoiceService:
                         writer.writerow([
                             invoice.invoice_id,
                             invoice.table_id,
+                            invoice.created_at,
                             item.item_id,
                             item.name,
                             self.get_item_type(item),
@@ -161,13 +184,10 @@ class InvoiceService:
     def get_item_type(self, item):
         if isinstance(item, Food):
             return "Food"
-
         if isinstance(item, Drink):
             return "Drink"
-
         if isinstance(item, Combo):
             return "Combo"
-
         return "Unknown"
 
     def create_item_from_data(self, item_data):
@@ -178,10 +198,8 @@ class InvoiceService:
 
         if item_type == "Food":
             return Food(item_id, name, price)
-
         if item_type == "Drink":
             return Drink(item_id, name, price)
-
         if item_type == "Combo":
             return Combo(item_id, name, price)
 
@@ -204,6 +222,7 @@ class InvoiceService:
             invoice_data = {
                 "invoice_id": invoice.invoice_id,
                 "table_id": invoice.table_id,
+                "created_at": invoice.created_at,
                 "items": [],
                 "promotion": None
             }
@@ -245,7 +264,8 @@ class InvoiceService:
                 invoice_data["invoice_id"],
                 invoice_data["table_id"],
                 items,
-                promotion
+                promotion,
+                invoice_data.get("created_at", None)
             )
 
             self.invoices.append(invoice)
